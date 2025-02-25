@@ -3,6 +3,6 @@ project(huffman-encoder)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(tg-term
-                 main.c
+add_executable(huffman-encoder
+                 main.cpp
 )
