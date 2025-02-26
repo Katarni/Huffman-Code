@@ -14,6 +14,8 @@ class HuffmanTree {
     explicit
     HuffmanTree(const char* tree_file);
 
+    std::string encode(const char* file);
+
  private:
     struct Node {
         size_t weight;
@@ -30,4 +32,8 @@ class HuffmanTree {
     };
 
     Node* root;
+    std::string* codes;
+
+    void fillCodes(Node* t, std::string code = "");
+    std::string getFileName(const char* file);
 };

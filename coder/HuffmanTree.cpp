@@ -11,6 +11,7 @@ HuffmanTree::HuffmanTree(const char *tree_file) {
     }
     std::ifstream readBuffer(tree_file, std::ifstream::binary);
     readBuffer.read((char*)&byte_cnt, 1024);
+    readBuffer.close();
 
     std::set<Node*, decltype(
     [](const Node *a, const Node *b) {
@@ -40,4 +41,71 @@ HuffmanTree::HuffmanTree(const char *tree_file) {
     }
 
     root = *node_builder.begin();
+
+    codes = new std::string[256];
+    for (int i = 0; i < 256; ++i) {
+        codes[i] = "";
+    }
+
+    fillCodes(root);
+}
+
+void HuffmanTree::fillCodes(HuffmanTree::Node *t, std::string code) {
+    if (t->left == nullptr && t->right == nullptr) {
+        codes[t->byte] = code;
+        return;
+    }
+
+    code.push_back(0);
+    fillCodes(t->left, code);
+    code.back() = 1;
+    fillCodes(t->right, code);
+}
+
+std::string HuffmanTree::encode(const char *file) {
+    std::ifstream readFile(file, std::ifstream::binary);
+    readFile.seekg(0, std::ios::end);
+    size_t file_size = readFile.tellg();
+    readFile.seekg(0, std::ios::beg);
+
+    char* data = new char[file_size];
+    readFile.read(data, (int)file_size);
+
+    uint64_t output_size = 0;
+    std::string output_data;
+    for (int i = 0; i < file_size; ++i) {
+        output_size += codes[data[i]].size();
+        output_data += codes[data[i]];
+    }
+
+    std::string out_file = getFileName(file) + ".packed";
+
+    std::ofstream os(out_file, std::ios::binary);
+    os.write((char*)&output_size, 8);
+    char cur_byte = 0;
+    int cnt = 0;
+    for (int i = 0; i < output_size; ++i, cnt = (cnt + 1) % 8) {
+        if (output_data[i] == 1) {
+            cur_byte |= 1 << (7 - i % 8);
+        }
+        if (i != 0 && cnt == 0) {
+            os.write(&cur_byte, 1);
+            cur_byte = 0;
+        }
+    }
+    os.write(&cur_byte, 1);
+
+    os.close();
+    return out_file;
+}
+
+std::string HuffmanTree::getFileName(const char *file) {
+    int dot_pos = 0;
+    for (int i = 0; i < strlen(file); ++i) {
+        if (file[i] == '.') {
+            dot_pos = i;
+        }
+    }
+
+    return {file, file + dot_pos};
 }
