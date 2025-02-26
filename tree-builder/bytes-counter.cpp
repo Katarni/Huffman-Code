@@ -24,17 +24,20 @@ int main(int argc, char** argv) {
     }
 
     auto file_name = getFileName(argv[1]);
-    std::ifstream is(argv[1], std::ios::binary | std::ifstream::in);
+    std::ifstream readBuffer(argv[1], std::ios::binary | std::ifstream::in);
 
-    unsigned char cur_byte = 0;
     uint32_t byte_cnt[256];
-    while (is >> cur_byte, !is.eof()) {
-        byte_cnt[cur_byte]++;
+    std::string line;
+    while (getline(readBuffer, line)) {
+        for (unsigned char cur_byte : line) {
+            byte_cnt[cur_byte]++;
+        }
     }
 
-    std::ofstream os(file_name + ".tree", std::ofstream::binary);
-    os.write((char*) &byte_cnt, 256);
-    os.close();
+    std::ofstream writeBuffer(file_name + ".tree", std::ofstream::binary);
+
+    writeBuffer.write((char*) &byte_cnt, 4*256);
+    writeBuffer.close();
 }
 
 
