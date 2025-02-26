@@ -74,8 +74,8 @@ std::string HuffmanTree::encode(const char *file) {
     uint64_t output_size = 0;
     std::string output_data;
     for (int i = 0; i < file_size; ++i) {
-        output_size += codes[data[i]].size();
-        output_data += codes[data[i]];
+        output_size += codes[(unsigned char)data[i]].size();
+        output_data += codes[(unsigned char)data[i]];
     }
 
     std::string out_file = getFileName(file) + "-encode.packed";
@@ -85,15 +85,17 @@ std::string HuffmanTree::encode(const char *file) {
     char cur_byte = 0;
     int cnt = 0;
     for (int i = 0; i < output_size; ++i, cnt = (cnt + 1) % 8) {
-        if (output_data[i] == 1) {
-            cur_byte |= 1 << (7 - i % 8);
-        }
         if (i != 0 && cnt == 0) {
             os.write(&cur_byte, 1);
             cur_byte = 0;
-            cnt = 1;
+            cnt = 0;
         }
+        if (output_data[i] == 1) {
+            cur_byte |= 1 << (7 - i % 8);
+        }
+        std::cout << (char)(output_data[i] + '0');
     }
+    std::cout << '\n';
     os.write(&cur_byte, 1);
 
     os.close();
@@ -128,7 +130,7 @@ std::string HuffmanTree::decode(const char *file) {
 
     Node* cur = root;
 
-    std::ofstream outFile(getFileName(file) + "-decoded.txt");
+    std::ofstream outFile(getFileName(file) + "-decoded.txt", std::ios::binary);
     int j = 0;
     for (int byte = 8; byte < byte_file_size; ++byte) {
         for (int i = 7; i >= 0 && j < data_file_size; --i, ++j) {
@@ -139,10 +141,11 @@ std::string HuffmanTree::decode(const char *file) {
             }
 
             if (cur->is_term) {
-                outFile << cur->byte;
+                outFile.write(&cur->byte, 1);
                 cur = root;
             }
         }
     }
+    outFile.close();
     return getFileName(file) + "-decoded.txt";
 }

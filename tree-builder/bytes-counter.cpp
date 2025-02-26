@@ -27,11 +27,15 @@ int main(int argc, char** argv) {
     std::ifstream readBuffer(argv[1], std::ios::binary | std::ifstream::in);
 
     uint32_t byte_cnt[256];
+    for (int i = 0; i < 256; ++i) {
+        byte_cnt[i] = 0;
+    }
     std::string line;
     while (getline(readBuffer, line)) {
         for (unsigned char cur_byte : line) {
             byte_cnt[cur_byte]++;
         }
+        byte_cnt['\n']++;
     }
 
     std::ofstream writeBuffer(file_name + ".tree", std::ofstream::binary);
