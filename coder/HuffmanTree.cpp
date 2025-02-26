@@ -9,12 +9,8 @@ HuffmanTree::HuffmanTree(const char *tree_file) {
     for (unsigned int & i : byte_cnt) {
         i = 0;
     }
-
     std::ifstream readBuffer(tree_file, std::ifstream::binary);
-    readBuffer.seekg(0, std::ios::beg);
-    readBuffer.getline((char*)&byte_cnt, 1024);
-
-    // сделаем вид, что все работает
+    readBuffer.read((char*)&byte_cnt, 1024);
 
     std::cout << 0;
 }

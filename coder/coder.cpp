@@ -6,5 +6,5 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    auto tree = HuffmanTree(argv[0]);
+    auto tree = HuffmanTree(argv[1]);
 }
