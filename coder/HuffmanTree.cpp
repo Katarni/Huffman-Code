@@ -63,7 +63,7 @@ void HuffmanTree::fillCodes(HuffmanTree::Node *t, std::string code) {
 }
 
 std::string HuffmanTree::encode(const char *file) {
-    std::ifstream readFile(file, std::ifstream::binary);
+    std::ifstream readFile(file, std::ios::binary | std::ifstream::in);
     readFile.seekg(0, std::ios::end);
     size_t file_size = readFile.tellg();
     readFile.seekg(0, std::ios::beg);
@@ -93,9 +93,7 @@ std::string HuffmanTree::encode(const char *file) {
         if (output_data[i] == 1) {
             cur_byte |= 1 << (7 - i % 8);
         }
-        std::cout << (char)(output_data[i] + '0');
     }
-    std::cout << '\n';
     os.write(&cur_byte, 1);
 
     os.close();
@@ -114,7 +112,7 @@ std::string HuffmanTree::getFileName(const char *file) {
 }
 
 std::string HuffmanTree::decode(const char *file) {
-    std::ifstream readEncode(file, std::ifstream::binary);
+    std::ifstream readEncode(file, std::ios::binary | std::ifstream::in);
 
     readEncode.seekg(0, std::ios::end);
     int byte_file_size = (int)readEncode.tellg();

@@ -42,6 +42,7 @@ int main(int argc, char** argv) {
 
     writeBuffer.write((char*) &byte_cnt, 4*256);
     writeBuffer.close();
+    readBuffer.close();
 }
 
 
