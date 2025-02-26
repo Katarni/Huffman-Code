@@ -11,6 +11,6 @@ int main(int argc, char** argv) {
     if (strcmp(argv[1], "-e") == 0) {
         std::cout << "Encoded file: " + tree.encode(argv[3]) << std::endl;
     } else {
-
+        std::cout << "Decoded file: " + tree.decode(argv[3]) << std::endl;
     }
 }

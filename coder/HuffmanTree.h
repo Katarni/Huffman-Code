@@ -15,25 +15,29 @@ class HuffmanTree {
     HuffmanTree(const char* tree_file);
 
     std::string encode(const char* file);
+    std::string decode(const char* file);
 
  private:
     struct Node {
         size_t weight;
         char byte;
         Node *left, *right;
+        bool is_term;
 
         explicit
         Node(size_t _weight) : byte(0), weight(_weight),
-                                left(nullptr), right(nullptr) {}
+                                left(nullptr), right(nullptr),
+                                is_term(false) {}
 
         explicit
         Node(char _byte, size_t _weight) : byte(_byte), weight(_weight),
-                                            left(nullptr), right(nullptr) {}
+                                            left(nullptr), right(nullptr),
+                                            is_term(true) {}
     };
 
     Node* root;
-    std::string* codes;
+    std::vector<std::string> codes;
 
     void fillCodes(Node* t, std::string code = "");
-    std::string getFileName(const char* file);
+    static std::string getFileName(const char* file);
 };
